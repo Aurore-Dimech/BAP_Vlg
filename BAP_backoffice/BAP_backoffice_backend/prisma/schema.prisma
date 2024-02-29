@@ -16,7 +16,7 @@ datasource db {
 model Association{
   id                        Int          @id @default(autoincrement())
   name                      String       @unique
-  siret                     String?       @unique
+  siret                     String?      @unique
   description               String?
   category                  String
   representative_name       String?

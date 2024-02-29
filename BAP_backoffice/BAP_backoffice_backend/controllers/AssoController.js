@@ -3,7 +3,11 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const getAssos = (req, res) => {
-    prisma.association.findMany()
+    prisma.association.findMany({
+        orderBy: {
+            name: 'asc',
+        }
+    })
     .then((assos) => {
         res.json(assos)
     })
@@ -30,6 +34,7 @@ const getAsso = (req, res) => {
 
 const createAsso = async (req, res) => {
     let asso = req.body
+    console.log(asso)
 
     const existingAsso = await prisma.association.findUnique({
         where: {
@@ -42,6 +47,11 @@ const createAsso = async (req, res) => {
     } else if (asso.name === '' || asso.category === '' || asso.address === '' || asso.town === '' || asso.postal_code === '' || asso.longitude === '' || asso.latitude === ''){
         return res.status(400).json({ error: 'The name, category, address, town, postal code, longitude and latitude cannot be empty' })
     } else{
+
+        if (asso.siret === ''){
+            asso.siret = null
+        }
+
         prisma.association.create({
             data: {
                 name: asso.name,
@@ -88,6 +98,11 @@ const updateAsso = async (req, res) => {
     } else if (asso.name === '' || asso.category === '' || asso.address === '' || asso.town === '' || asso.postal_code === '' || asso.longitude === '' || asso.latitude === ''){
         return res.status(400).json({ error: 'The name, category, address, town, postal code, longitude and latitude cannot be empty' })
     } else {
+
+        if (asso.siret === ''){
+            asso.siret = null
+        }
+
         prisma.association.update({
             where : {
                 id: id
@@ -162,8 +177,8 @@ const searchAsso = async (req, res) => {
             ]
         },
         orderBy: {
-              email: 'asc',
-            },
+            name: 'asc',
+        },
     })
     .then((asso) => {
         res.json(asso)
