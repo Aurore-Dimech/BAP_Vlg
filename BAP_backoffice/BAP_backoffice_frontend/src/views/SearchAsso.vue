@@ -2,7 +2,7 @@
     import SearchAssociation from '@/components/SearchAssociation.vue';
 
     export default {
-        name: 'Search',
+        name: 'SearchAsso',
 
         components: {
             SearchAssociation

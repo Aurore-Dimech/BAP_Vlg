@@ -11,10 +11,10 @@
 
         methods:{
             
-            async searchAssociation(){
+            async searchEvent(){
                 try {
                     this.search = []
-                    let response = await axios.get(`http://localhost:3000/associations/search/${this.searchInput}`)
+                    let response = await axios.get(`http://localhost:3000/events/search/${this.searchInput}`)
                     this.search = response.data
                     this.searchInput= ''
                 } catch(err) {
@@ -22,12 +22,12 @@
                 }
             },
 
-            async deleteAssociation(id){
+            async deleteEvent(id){
                 try{
                     await axios.delete(
-                        `http://localhost:3000/associations/${id}`
+                        `http://localhost:3000/events/${id}`
                     )
-                    this.getAssociations()
+                    this.getEvents()
                 }catch(err){
                     console.log(err)
                 }
@@ -39,11 +39,11 @@
 <template>
         <div>
             <div>
-                <input type="text" placeholder="Rechercher par nom, représentant.e, catégorie, etc." v-model="searchInput">
+                <input type="text" placeholder="Rechercher par nom, lieu, etc." v-model="searchInput">
             </div>
 
             <div>
-                <button @click="searchAssociation">Rechercher</button>
+                <button @click="searchEvent">Rechercher</button>
             </div>
         
         </div>
@@ -53,7 +53,7 @@
 
             <thead>
                 <tr>
-                    <th>Association</th>
+                    <th>Evènement</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -61,11 +61,11 @@
             <tbody>
                 <tr v-for="searched in search" :key='searched.id'>
                     <td>
-                        <router-link :to="{name:'SingleAsso', params:{id: searched.id}}">{{ searched.name }}</router-link>
+                        <router-link :to="{name:'SingleEvent', params:{id: searched.id}}">{{ searched.name }}</router-link>
                     </td>
                     <td>
-                        <router-link :to="{name:'EditAsso', params:{id: searched.id}}">Modifier</router-link>
-                        <button @click="deleteAssociation(searched.id)">Supprimer</button>
+                        <router-link :to="{name:'EditEvent', params:{id: searched.id}}">Modifier</router-link>
+                        <button @click="deleteEvent(searched.id)">Supprimer</button>
                     </td>
                 </tr>
             </tbody>

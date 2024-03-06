@@ -70,4 +70,20 @@ const searchAsso = async (req, res) => {
     })
 }
 
-export { getAssos, getAsso, searchAsso }
+const getEventsByAsso = async (req, res) => {
+    let id = Number(req.params.id)
+
+    prisma.event.findMany({
+        where : {
+            id_association: id
+        }
+    })
+    .then((asso) => {
+        res.json(asso)
+    })
+    .catch((error) => {
+        res.json(error)
+    })    
+}
+
+export { getAssos, getAsso, searchAsso, getEventsByAsso }

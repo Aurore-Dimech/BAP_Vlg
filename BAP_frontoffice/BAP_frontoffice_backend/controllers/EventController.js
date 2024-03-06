@@ -28,4 +28,36 @@ const getEvent = (req, res) => {
     })
 }
 
-export { getEvents, getEvent }
+const searchEvent = async (req, res) => {
+    let input = req.params.searchInput
+
+    await prisma.event.findMany({
+        where : {
+            OR: [
+                {
+                    name: {contains: input}, 
+                },
+                // {
+                //     start_date: {contains: input}, 
+                // },
+                {
+                    address: {contains: input}, 
+                },
+                {
+                    town: {contains: input}
+                }
+            ]
+        },
+        orderBy: {
+            name: 'asc',
+        },
+    })
+    .then((event) => {
+        res.json(event)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
+export { getEvents, getEvent, searchEvent }

@@ -78,7 +78,6 @@
     </head>
 
     <div>
-        <!-- <router-link :to="{name:'Create'}" id="newAsso">+</router-link> -->
 
         <table>
 
@@ -95,7 +94,7 @@
                         <router-link :to="{name:'SingleAsso', params:{id: item.id}}">{{ item.name }}</router-link>
                     </td>
                     <td>
-                        <router-link :to="{name:'Edit', params:{id: item.id}}">Modifier</router-link>
+                        <router-link :to="{name:'EditAsso', params:{id: item.id}}">Modifier</router-link>
                         <button @click="deleteAssociation(item.id)">Supprimer</button>
                     </td>
                 </tr>

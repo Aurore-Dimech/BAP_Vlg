@@ -1,5 +1,6 @@
 <script>
     import AssociationList from '@/components/AssociationList.vue';
+    import EventList from '@/components/EventList.vue'
 
     export default {
         name: 'Index',
@@ -11,7 +12,8 @@
         },
 
         components: {
-            AssociationList
+            AssociationList,
+            EventList
         }
 }
 </script>
@@ -20,6 +22,9 @@
     
     <div>
         <AssociationList />
+    </div>
+    <div>
+        <EventList />
     </div>
 
 </template>

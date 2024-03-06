@@ -1,18 +1,18 @@
 <script>
-    import AddAssociation from '@/components/AddAssociation.vue';
+    import UpdateEvent from '@/components/UpdateEvent.vue';
 
     export default {
-        name: 'Created',
+        name: 'EditEvent',
 
         components: {
-            AddAssociation
+            UpdateEvent
         }
     }
 </script>
 
 <template>
     <div>
-        <AddAssociation />
+        <UpdateEvent />
     </div>
 </template>
   

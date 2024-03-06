@@ -19,6 +19,7 @@
         data(){
             return{
                 association: {},
+                events: {},
 
                 map: null,
                 marker: null,
@@ -34,6 +35,7 @@
 
         created: function(){
             this.getAssociationById();
+            this.getEventsByAsso()
         },
         
         methods:{
@@ -50,6 +52,18 @@
                     console.log(err);
                 }
             },
+
+            async getEventsByAsso() {
+                try {
+                    await this.getAssociationById()
+
+                    const response = await axios.get(`http://localhost:3000/associations/events/${this.association.id}`
+                    )
+                    this.events = response.data
+                } catch (err) {
+                    console.log(err);
+                }
+            }
         }, 
 
     }
@@ -94,6 +108,20 @@
             <h2>Coordonnées</h2>
             <div>
                 <p>{{ this.association.adress }} <span v-if="this.association.complement_address != ''"> {{ this.association.complement_address }}</span> {{ this.association.postal_code }} {{ this.association.town }}</p>
+            </div>
+        </div>
+
+        <div>
+            <h2>Evènements</h2>
+            <div>
+                <p v-if="this.events.length === 0"> Pas d'évènements prévus</p>
+                <tbody v-else>
+                    <tr v-for="event in events" :key='event.id'>
+                        <td>
+                            <router-link :to="{name:'SingleEvent', params:{id: event.id}}">{{ event.name }}</router-link>
+                        </td>
+                    </tr>
+                </tbody>
             </div>
         </div>
 

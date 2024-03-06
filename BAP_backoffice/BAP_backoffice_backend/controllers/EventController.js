@@ -30,13 +30,15 @@ const getEvent = (req, res) => {
 
 const createEvent = (req, res) => {
     let event = req.body
+    let startDate = new Date(event.start_date);
+    let endDate = new Date(event.end_date);
 
     prisma.event.create({
         data: {
             name: event.name,
-            start_date: event.start_date,
-            end_date: event.end_date,
-            id_association: Number(event.id_asso), //à vérifier
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString(),
+            id_association: Number(event.id_association), //à vérifier
             address: event.address,
             complement_address: event.complement_address,
             town: event.town,
@@ -57,6 +59,8 @@ const createEvent = (req, res) => {
 const updateEvent = (req, res) => {
     let id = Number(req.params.id)
     let event = req.body
+    let startDate = new Date(event.start_date);
+    let endDate = new Date(event.end_date);
 
     prisma.event.update({
         where : {
@@ -64,9 +68,9 @@ const updateEvent = (req, res) => {
         },
         data: {
             name: event.name,
-            start_date: event.start_date,
-            end_date: event.end_date,
-            id_association: Number(event.id_asso), //à vérifier
+            start_date: startDate.toISOString(),
+            end_date: endDate.toISOString(),
+            id_association: Number(event.id_association), //à vérifier
             address: event.address,
             complement_address: event.complement_address,
             town: event.town,
@@ -99,4 +103,40 @@ const deleteEvent = (req, res) => {
     })
 }
 
-export { getEvents, getEvent, createEvent, updateEvent, deleteEvent }
+const searchEvent = async (req, res) => {
+    console.log(req.params.searchInput)
+    let input = req.params.searchInput
+
+    await prisma.event.findMany({
+        where : {
+            OR: [
+                {
+                    name: {contains: input}, 
+                },
+                {
+                    start_date: {contains: input}, 
+                },
+                {
+                    address: {contains: input}, 
+                },
+                {
+                    town: {contains: input}
+                }
+            ]
+        },
+        orderBy: {
+            name: 'asc',
+        },
+    })
+    .then((asso) => {
+        console.log(asso)
+        res.json(asso)
+    })
+    .catch((error) => {
+        console.log(error)
+        res.json(error)
+    })
+}
+
+
+export { getEvents, getEvent, createEvent, updateEvent, deleteEvent, searchEvent }

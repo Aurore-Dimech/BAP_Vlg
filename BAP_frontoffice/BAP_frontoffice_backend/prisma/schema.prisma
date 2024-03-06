@@ -1,3 +1,9 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,45 +13,43 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model association {
-  id                     Int     @id @default(autoincrement())
-  name                   String  @unique(map: "Association_name_key")
-  siret                  String? @unique(map: "Association_siret_key")
-  description            String?
-  category               String
-  representative_name    String?
-  representative_surname String?
-  mail                   String?
-  phone                  String?
-  address                String
-  complement_address     String?
-  town                   String
-  postal_code            String
-  longitude              String
-  latitude               String
-  event                  event[]
+model Association{
+  id                        Int          @id @default(autoincrement())
+  name                      String       @unique
+  siret                     String?      @unique
+  description               String?
+  category                  String
+  representative_name       String?
+  representative_surname    String?
+  mail 					            String?
+  phone 					          String?
+  address 				          String
+  complement_address			  String?
+  town					            String
+  postal_code               String
+  longitude				          String
+  latitude 				          String
+  event                     Event[]
 }
 
-model event {
-  id                 Int         @id @default(autoincrement())
-  name               String
-  start_date         DateTime
-  end_date           DateTime
-  id_association     Int
-  address            String
-  complement_address String?
-  town               String
-  postal_code        String
-  longitude          String
-  latitude           String
-  association        association @relation(fields: [id_association], references: [id], map: "Event_id_association_fkey")
-
-  @@index([id_association], map: "Event_id_association_fkey")
+model Event {
+  id                        Int             @id @default(autoincrement())
+  name                      String
+  start_date 			          DateTime
+  end_date			            DateTime
+  association 		          Association     @relation(fields: [id_association], references:[id])
+  id_association            Int
+  address	        		      String
+  complement_address		    String?
+  town 				              String
+  postal_code 			        String
+  longitude			            String
+  latitude 			            String
 }
 
-model user {
-  id       Int    @id @default(autoincrement())
-  email    String @unique(map: "User_email_key")
-  username String
-  password String
+model User {
+  id                 Int          @id @default(autoincrement())
+  email              String       @unique
+  username           String       
+  password           String
 }

@@ -9,8 +9,10 @@ import { RouterLink, RouterView } from 'vue-router'
     <div class="wrapper">
       <nav>
         <RouterLink to="/">Accueil</RouterLink>
-        <RouterLink to="/create">Créer une association</RouterLink>
-        <RouterLink to="/search">Rechercher une association</RouterLink>
+        <RouterLink to="/createAsso">Créer une association</RouterLink>
+        <RouterLink to="/searchAsso">Rechercher une association</RouterLink>
+        <RouterLink to="/createEvent">Créer un évènement</RouterLink>
+        <RouterLink to="/searchEvent">Rechercher un évènement</RouterLink>
       </nav>
     </div>
   </header>
@@ -22,7 +24,7 @@ import { RouterLink, RouterView } from 'vue-router'
 <style scoped>
 
 header{
-  padding: 15px 200px;
+  padding: 15px
 }
 
 nav{
