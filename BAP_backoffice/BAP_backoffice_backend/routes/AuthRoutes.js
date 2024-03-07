@@ -1,9 +1,13 @@
 import express from "express";
-import { logIn } from '../controllers/AuthController.js'
+import { getUsers, getUserById, signUp, logIn, updateUser, deleteUser } from '../controllers/AuthController.js'
 
 const router = express.Router()
 
-// router.post('/signup', signUp)
+router.get('/', getUsers)
+router.get('/:id', getUserById)
+router.delete('/:id', deleteUser)
+router.post('/signup', signUp)
 router.post('/login', logIn)
+router.patch('/update/:id', updateUser)
 
 export default router

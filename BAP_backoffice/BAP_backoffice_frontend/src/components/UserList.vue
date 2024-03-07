@@ -5,30 +5,30 @@
     export default {
         data(){
             return{
-                items: []
+                users: []
             }
         },
 
         created(){
-            this.getEvents();
+            this.getUsers();
         },
 
         methods:{
-            async getEvents(){
+            async getUsers(){
                 try {
-                    const response = await axios.get("http://localhost:3000/events");
-                    this.items = response.data
+                    const response = await axios.get("http://localhost:3000/auth");
+                    this.users = response.data
                 } catch(err) {
                     console.log(err)
                 }
             },
 
-            async deleteEvent(id){
+            async deleteUser(id){
                 try{
                     await axios.delete(
-                        `http://localhost:3000/events/${id}`
+                        `http://localhost:3000/users/${id}`
                     )
-                    this.getEvents()
+                    this.getUsers()
                 }catch(err){
                     console.log(err)
                 }
@@ -45,21 +45,23 @@
 
             <thead>
                 <tr>
-                    <th>Evènement</th>
-                    <th>Etat</th>
+                    <th>Utilisateurs</th>
+                    <th>Role</th>
+                    <th>Vérification</th>
                     <th>Actions</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr v-for="item in items" :key='item.id'>
+                <tr v-for="user in users" :key='user.id'>
                     <td>
-                        <router-link :to="{name:'SingleEvent', params:{id: item.id}}">{{ item.name }}</router-link>
+                        <router-link :to="{name:'SingleUser', params:{id: user.id}}"> {{ user.email }}</router-link>
                     </td>
-                    <td>{{ item.archived }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.verified }}</td>
                     <td>
-                        <router-link :to="{name:'EditEvent', params:{id: item.id}}">Modifier</router-link>
-                        <button @click="deleteEvent(item.id)">Supprimer</button>
+                        <router-link :to="{name:'EditUser', params:{id: user.id}}">Modifier</router-link>
+                        <button @click="deleteUser(user.id)">Supprimer</button>
                     </td>
                 </tr>
             </tbody>

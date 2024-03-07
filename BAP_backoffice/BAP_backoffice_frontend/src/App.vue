@@ -13,6 +13,9 @@ import { RouterLink, RouterView } from 'vue-router'
         <RouterLink to="/searchAsso">Rechercher une association</RouterLink>
         <RouterLink to="/createEvent">Créer un évènement</RouterLink>
         <RouterLink to="/searchEvent">Rechercher un évènement</RouterLink>
+        <RouterLink to="/signup">Créer un compte</RouterLink>
+        <RouterLink to="/login">Se connecter</RouterLink>
+        <RouterLink to="/users/list">Liste d'utilisateurs</RouterLink>
       </nav>
     </div>
   </header>

@@ -33,27 +33,31 @@ const createEvent = (req, res) => {
     let startDate = new Date(event.start_date);
     let endDate = new Date(event.end_date);
 
-    prisma.event.create({
-        data: {
-            name: event.name,
-            start_date: startDate.toISOString(),
-            end_date: endDate.toISOString(),
-            id_association: Number(event.id_association), //à vérifier
-            address: event.address,
-            complement_address: event.complement_address,
-            town: event.town,
-            postal_code: event.postal_code,
-            longitude: event.longitude,
-            latitude: event.latitude
-        }
-    })
-
-    .then((event) => {
-        res.json(event)
-    })
-    .catch((error) => {
-        res.json(error)
-    }) 
+    if (event.name === '' || event.start_date === '' || event.end_date === '' || event.id_association === '' || event.address === '' || event.town === '' || event.postal_code === '' || event.longitude === '' || event.latitude === ''){
+        return res.status(400).json({ error: 'The name, start date, end date, association, address, town, postal code, longitude and latitude cannot be empty' })
+    } else {
+        prisma.event.create({
+            data: {
+                name: event.name,
+                start_date: startDate.toISOString(),
+                end_date: endDate.toISOString(),
+                id_association: Number(event.id_association),
+                address: event.address,
+                complement_address: event.complement_address,
+                town: event.town,
+                postal_code: event.postal_code,
+                longitude: event.longitude,
+                latitude: event.latitude,
+                archived: event.archived
+            }
+        })
+        .then((event) => {
+            res.json(event)
+        })
+        .catch((error) => {
+            res.json(error)
+        }) 
+    }
 }
 
 const updateEvent = (req, res) => {
@@ -62,29 +66,35 @@ const updateEvent = (req, res) => {
     let startDate = new Date(event.start_date);
     let endDate = new Date(event.end_date);
 
-    prisma.event.update({
-        where : {
-            id: id
-        },
-        data: {
-            name: event.name,
-            start_date: startDate.toISOString(),
-            end_date: endDate.toISOString(),
-            id_association: Number(event.id_association), //à vérifier
-            address: event.address,
-            complement_address: event.complement_address,
-            town: event.town,
-            postal_code: event.postal_code,
-            longitude: event.longitude,
-            latitude: event.latitude
-        }
-    })
-    .then((event) => {
-        res.json(event)
-    })
-    .catch((error) => {
-        res.json(error)
-    })
+    if (event.name === '' || event.start_date === '' || event.end_date === '' || event.id_association === '' || event.address === '' || event.town === '' || event.postal_code === '' || event.longitude === '' || event.latitude === ''){
+        return res.status(400).json({ error: 'The name, start date, end date, association, address, town, postal code, longitude and latitude cannot be empty' })
+    } else {
+
+        prisma.event.update({
+            where : {
+                id: id
+            },
+            data: {
+                name: event.name,
+                start_date: startDate.toISOString(),
+                end_date: endDate.toISOString(),
+                id_association: Number(event.id_association),
+                address: event.address,
+                complement_address: event.complement_address,
+                town: event.town,
+                postal_code: event.postal_code,
+                longitude: event.longitude,
+                latitude: event.latitude,
+                archived: event.archived
+            }
+        })
+        .then((event) => {
+            res.json(event)
+        })
+        .catch((error) => {
+            res.json(error)
+        })
+    }
 }
 
 const deleteEvent = (req, res) => {
@@ -128,12 +138,10 @@ const searchEvent = async (req, res) => {
             name: 'asc',
         },
     })
-    .then((asso) => {
-        console.log(asso)
-        res.json(asso)
+    .then((event) => {
+        res.json(event)
     })
     .catch((error) => {
-        console.log(error)
         res.json(error)
     })
 }

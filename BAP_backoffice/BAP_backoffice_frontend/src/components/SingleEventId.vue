@@ -87,6 +87,7 @@
                 <p>Heure de début : {{ this.startDate.slice(11, 16) }}</p>
                 <p>Date de fin : {{ this.event.end_date }}</p>
                 <p>Association : {{ this.association }}</p>
+                <p>Etat : {{ this.event.archived }}</p>
             </div>
         </div>
 

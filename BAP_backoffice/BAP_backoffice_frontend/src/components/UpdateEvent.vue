@@ -15,6 +15,7 @@
                     postal_code: "",
                     longitude: "",
                     latitude: "",
+                    archived: false
                 },
                 associations: [],
                 startDate: '',
@@ -43,6 +44,7 @@
                         postal_code: response.data.postal_code,
                         longitude: response.data.longitude,
                         latitude: response.data.latitude,
+                        archived: response.data.archived
                     }
 
                     this.event.start_date = this.event.start_date.slice(0,16)
@@ -54,6 +56,10 @@
 
             async updateEvent(){
                 try{
+                    const boolString = document.querySelector("#archived").value
+                    const boolean = (/true/).test(boolString)
+                    this.event.archived = boolean
+
                     await axios.patch(`http://localhost:3000/events/${this.$route.params.id}`, this.event);
                     const response = await axios.get(`http://localhost:3000/events/${this.$route.params.id}`);
                     
@@ -68,6 +74,7 @@
                         postal_code: response.data.postal_code,
                         longitude: response.data.longitude,
                         latitude: response.data.latitude,
+                        archived: response.data.archived
                     }
 
                     this.event.start_date = this.event.start_date.slice(0,16)
@@ -104,6 +111,11 @@
                 <select name="associations" id="associations" v-model="event.id_association">
                     <option value="" disabled selected>Association</option>
                     <option v-for="association in associations" :value="association.id">{{ association.name }}</option>
+                </select>
+                <select name="archived" id="archived" v-model="event.archived">
+                    <option value="" disabled selected>Etat</option>
+                    <option value="false">En cours</option>
+                    <option value="true">Archivé</option>
                 </select>
             </div>
         </div>

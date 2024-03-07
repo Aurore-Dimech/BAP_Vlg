@@ -4,8 +4,38 @@ import jwt from "jsonwebtoken"
 
 const prisma = new PrismaClient()
 
+const getUsers = (req, res) => {
+    prisma.user.findMany({
+        orderBy: {
+            email: 'asc',
+        }
+    })
+    .then((users) => {
+        res.json(users)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
+const getUserById = (req, res) => {
+    let id = Number(req.params.id)
+
+    prisma.user.findUnique({
+        where : {
+            id: id
+        }
+    })
+    .then((user) => {
+        res.json(user)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
 const signUp = async (req, res) => {
-    const { username, email, password } = req.body
+    const { email, password } = req.body
     const hashedPassword = await bcrypt.hash(password, 10)
 
     const existingUser = await prisma.user.findUnique({
@@ -14,7 +44,7 @@ const signUp = async (req, res) => {
         }
     })
 
-    if(username === '' || email === '' || password ===''){
+    if(email === '' || password ===''){
         res.json({error: 'All fields must be completed'})
     } else if (existingUser) {
         return res.status(400).json({ error: 'This email is already registered' })
@@ -22,18 +52,15 @@ const signUp = async (req, res) => {
 
         prisma.user.create({
             data: {
-                username,
                 email,
-                password: hashedPassword
+                password: hashedPassword,
+                role: 'admin',
+                verified: false
             }
         })
     
-        .then((user) => {
-            const token = jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, { 
-                expiresIn: '2h'
-            })
-        
-            res.json(token)
+        .then((user) => {       
+            res.json(user)
         })
         .catch((error) => {
             res.json({error: error.message})
@@ -66,4 +93,62 @@ const logIn = async (req, res) => {
     res.json(token)
 }
 
-export { logIn }
+const updateUser = async (req, res) => {
+    let id = Number(req.params.id)
+    let user = req.body
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const existingUser = await prisma.user.findFirst({
+        where: {
+            email: user.email,
+            id: {
+                not: id
+            }
+        }
+    })
+
+    if(email === '' || password ==='' || role ==='' || verified === ''){
+        return res.status(400).json({ error: 'All fields must be completed' })
+    } else if (existingUser) {
+        return res.status(400).json({ error: 'This email already is already registered' })
+
+    } else {
+
+        prisma.user.update({
+            where : {
+                id: id
+            },
+            data: {
+                email: user.email,
+                password: hashedPassword,
+                role: user.role,
+                verified: user.verified
+            }
+        })
+    
+        .then((user) => {
+            res.json(user)
+        })
+        .catch((error) => {
+            res.json({error: error.message})
+        })
+    }
+}
+
+const deleteUser = async (req, res) => {
+    let id = Number(req.params.id)
+
+    prisma.user.delete({
+        where : {
+            id: id
+        }
+    })
+    .then((asso) => {
+        res.json(asso)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
+export { getUsers, getUserById, signUp, logIn, updateUser, deleteUser }

@@ -15,6 +15,7 @@
                     postal_code: "",
                     longitude: "",
                     latitude: "",
+                    archived: false
                 },
                 associations : []             
             }
@@ -27,9 +28,12 @@
         methods:{
             async saveEvent(){
                 try{
+                    const boolString = document.querySelector("#archived").value
+                    const boolean = (/true/).test(boolString)
+                    this.event.archived = boolean
+
                     await axios.post("http://localhost:3000/events", this.event)
                     .then (response => {
-                        console.log(response);
                         this.event = {
                             name: "",
                             start_date : "",
@@ -41,6 +45,7 @@
                             postal_code: "",
                             longitude: "",
                             latitude: "",
+                            archived: false
                         }
                     })
                     .catch(error => {
@@ -76,6 +81,11 @@
                 <select name="associations" id="associations" v-model="event.id_association">
                     <option value="" disabled selected>Association</option>
                     <option v-for="association in associations" :value="association.id">{{ association.name }}</option>
+                </select>
+                <select name="archived" id="archived" v-model="event.archived">
+                    <option value="" disabled selected>Archivé</option>
+                    <option value="false">En cours</option>
+                    <option value="true">Archivé</option>
                 </select>
             </div>
         </div>
