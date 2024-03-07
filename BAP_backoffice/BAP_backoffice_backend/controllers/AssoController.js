@@ -133,12 +133,31 @@ const updateAsso = async (req, res) => {
 
 }
 
+// const deleteAsso = (req, res) => {
+//     let id = Number(req.params.id)
+
+//     prisma.association.delete({
+//         where : {
+//             id: id
+//         }
+//     })
+//     .then((asso) => {
+//         res.json(asso)
+//     })
+//     .catch((error) => {
+//         res.json(error)
+//     })
+// }
+
 const deleteAsso = (req, res) => {
     let id = Number(req.params.id)
 
-    prisma.association.delete({
+    prisma.association.update({
         where : {
             id: id
+        },
+        data: {
+            closed: true
         }
     })
     .then((asso) => {

@@ -24,6 +24,7 @@ model Association{
   longitude				          String
   latitude 				          String
   event                     Event[]
+  closed                    Boolean       @default(false)
 }
 
 model Event {
@@ -46,6 +47,6 @@ model User {
   id                 Int          @id @default(autoincrement())
   email              String       @unique       
   password           String
-  role               String
-  verified           Boolean
+  role               String       @default("En attente")
+  verified           Boolean      @default(false)
 }

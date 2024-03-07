@@ -8,7 +8,7 @@
                     email: "",
                     password : "",
                     role: "",
-                    verified: "",
+                    verified: false,
                 }, 
             }
         },
@@ -35,7 +35,11 @@
 
             async updateUser(){
                 try{
-                    await axios.patch(`http://localhost:3000/auth/update/${this.$route.params.id}`, this.event);
+                    const boolString = document.querySelector("#verified").value
+                    const boolean = (/true/).test(boolString)
+                    this.user.verified = boolean
+
+                    await axios.patch(`http://localhost:3000/auth/update/${this.$route.params.id}`, this.user);
                     const response = await axios.get(`http://localhost:3000/auth/${this.$route.params.id}`);
                     
                     this.user = {

@@ -146,5 +146,24 @@ const searchEvent = async (req, res) => {
     })
 }
 
+const verifyEventDate = async () => {
+    const date = new Date();
+    try{
+        await prisma.event.updateMany({
+            where : {
+                archived: false,
+                end_date: {
+                    lt: date
+                }
+            },
+            data: {
+                archived: true
+            }
+        })
+    } catch (error) {
+        console.log(error)
+    }
+}
 
-export { getEvents, getEvent, createEvent, updateEvent, deleteEvent, searchEvent }
+
+export { getEvents, getEvent, createEvent, updateEvent, deleteEvent, searchEvent, verifyEventDate }

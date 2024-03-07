@@ -96,7 +96,8 @@ const logIn = async (req, res) => {
 const updateUser = async (req, res) => {
     let id = Number(req.params.id)
     let user = req.body
-    const hashedPassword = await bcrypt.hash(password, 10)
+    console.log(req.body)
+    const hashedPassword = await bcrypt.hash(user.password, 10)
 
     const existingUser = await prisma.user.findFirst({
         where: {
@@ -107,7 +108,7 @@ const updateUser = async (req, res) => {
         }
     })
 
-    if(email === '' || password ==='' || role ==='' || verified === ''){
+    if(user.email === '' || user.password ==='' || user.role ==='' || user.verified === ''){
         return res.status(400).json({ error: 'All fields must be completed' })
     } else if (existingUser) {
         return res.status(400).json({ error: 'This email already is already registered' })
