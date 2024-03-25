@@ -6,6 +6,7 @@
             return{
                 user: {
                 }, 
+                token: localStorage.getItem('token'),
             }
         },
 
@@ -16,7 +17,11 @@
         methods:{
             async getUserById(){
                 try{
-                    const response = await axios.get(`http://localhost:3000/auth/${this.$route.params.id}`);
+                    const response = await axios.get(`http://localhost:3000/auth/${this.$route.params.id}`, {
+                        headers: {
+                            'x-access-token' : this.token
+                        }
+                    });
                     this.user = response.data
                 } catch(err){
                     console.log(err)

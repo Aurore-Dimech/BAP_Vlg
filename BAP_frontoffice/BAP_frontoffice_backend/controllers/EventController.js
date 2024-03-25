@@ -3,7 +3,14 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const getEvents = (req, res) => {
-    prisma.event.findMany()
+    prisma.event.findMany({
+        where: {
+            archived: false
+        },
+        orderBy: {
+            start_date: 'asc'
+        }
+    })
     .then((events) => {
         res.json(events)
     })
@@ -15,31 +22,45 @@ const getEvents = (req, res) => {
 const getEvent = (req, res) => {
     let id = Number(req.params.id)
 
-    prisma.event.findUnique({
-        where : {
-            id: id
+    const archivedEvent = await prisma.event.findFirst({
+        where: {
+            id: id,
+            archived: true
         }
     })
-    .then((event) => {
-        res.json(event)
-    })
-    .catch((error) => {
-        res.json(error)
-    })
+
+    if (archivedEvent) {
+        return res.status(400).json({ error: 'Event not available' })
+    } else {
+        prisma.event.findUnique({
+            where : {
+                id: id
+            }
+        })
+        .then((event) => {
+            res.json(event)
+        })
+        .catch((error) => {
+            res.json(error)
+        })
+    }
+
 }
 
 const searchEvent = async (req, res) => {
+    console.log(req.params.searchInput)
     let input = req.params.searchInput
 
     await prisma.event.findMany({
         where : {
+            archived: false,
             OR: [
                 {
                     name: {contains: input}, 
                 },
-                // {
-                //     start_date: {contains: input}, 
-                // },
+                {
+                    start_date: {contains: input}, 
+                },
                 {
                     address: {contains: input}, 
                 },

@@ -4,6 +4,9 @@ const prisma = new PrismaClient()
 
 const getAssos = (req, res) => {
     prisma.association.findMany({
+        where: {
+            closed: false
+        },
         orderBy: {
             name: 'asc',
         }
@@ -19,17 +22,28 @@ const getAssos = (req, res) => {
 const getAsso = (req, res) => {
     let id = Number(req.params.id)
 
-    prisma.association.findUnique({
-        where : {
-            id: id
+    const closedAsso = await prisma.association.findFirst({
+        where: {
+            id: id,
+            closed: true
         }
     })
-    .then((asso) => {
-        res.json(asso)
-    })
-    .catch((error) => {
-        res.json(error)
-    })
+
+    if (closedAsso) {
+        return res.status(400).json({ error: 'Association not available' })
+    } else {
+        prisma.association.findUnique({
+            where : {
+                id: id
+            }
+        })
+        .then((asso) => {
+            res.json(asso)
+        })
+        .catch((error) => {
+            res.json(error)
+        })
+    }
 }
 
 const searchAsso = async (req, res) => {
@@ -37,6 +51,7 @@ const searchAsso = async (req, res) => {
 
     await prisma.association.findMany({
         where : {
+            closed: false,
             OR: [
                 {
                     name: {contains: input}, 
@@ -75,7 +90,8 @@ const getEventsByAsso = async (req, res) => {
 
     prisma.event.findMany({
         where : {
-            id_association: id
+            id_association: id,
+            archived: false
         }
     })
     .then((asso) => {

@@ -19,6 +19,7 @@
                     postal_code: "",
                     longitude: "",
                     latitude: "",
+                    closed: false
                 }             
             }
         },
@@ -26,6 +27,10 @@
         methods:{
             async saveAssociation(){
                 try{
+                    const boolString = document.querySelector("#closed").value
+                    const boolean = (/true/).test(boolString)
+                    this.association.closed = boolean
+                    
                     await axios.post("http://localhost:3000/associations", this.association);
                         
                     this.association = {
@@ -43,6 +48,7 @@
                         postal_code: "",
                         longitude: "",
                         latitude: "",
+                        closed: false
                     }
                 } catch(err){
                     console.log(err.response.data)
@@ -105,6 +111,17 @@
                 <p class="error" v-if="association.longitude.length <= 0">Champ obligatoire</p>
                 <input type="text" placeholder="Latitude" v-model="association.latitude">
                 <p class="error" v-if="association.latitude.length <= 0">Champ obligatoire</p>
+            </div>
+        </div>
+
+        <div>
+            <label>Etat</label>
+            <div>
+                <select name="closed" id="closed" v-model="association.closed">
+                    <option value="false">ouverte</option>
+                    <option value="true">fermée</option>
+                </select>
+                <p class="error" v-if="association.closed.length <= 0">Champ obligatoire</p>
             </div>
         </div>
 

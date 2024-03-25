@@ -7,28 +7,31 @@
                 user: {
                     email: "",
                     password: "",
+                },
 
-                    data: null
-                }             
+                token: localStorage.getItem('token'),
+                data: null
             }
         },
 
         methods:{
             async logIn(){
-                try{
-                    const response = await axios.post("http://localhost:3000/auth/login", this.user);
-                    this.data = response.data
-                    console.log(this.data)
-                    localStorage.setItem('token', this.data)
-                        
-                    this.user = {
-                        email: "",
-                        password: "",
+                const response = await axios.post("http://localhost:3000/auth/login", this.user);
+
+                this.data = response.data
+
+                if(!this.token && !this.data.error) {
+                    try{
+                        localStorage.setItem('token', this.data)
+    
+                        location.reload()
+                    } catch(err){
+                        console.log(err.response.data)
                     }
-                } catch(err){
-                    console.log(err.response.data)
                 }
-            }
+            },
+
+            
         }
     }
 </script>
@@ -41,7 +44,6 @@
             <label>Se connecter</label>
             <div>
                 <input type="email" placeholder="Adresse mail" v-model="user.email">
-                <p class="error" v-if="user.email.length <= 0">Champ obligatoire</p>
                 <input type="password" placeholder="Mot de passe" v-model="user.password">
             </div>
         </div>
@@ -49,6 +51,8 @@
         <div> <!---mot de passe perdu ?-->
             <button @click="logIn">Enregistrer</button>
         </div>
+
+        <p class="error" v-if="data && data.error">{{ data.error }}</p>
 
     </div>
 

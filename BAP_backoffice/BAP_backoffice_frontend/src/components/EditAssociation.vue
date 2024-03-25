@@ -19,6 +19,7 @@
                     postal_code: "",
                     longitude: "",
                     latitude: "",
+                    closed: false
                 },
             }
         },
@@ -47,6 +48,7 @@
                         complement_address: response.data.complement_address,
                         longitude: response.data.longitude,
                         latitude: response.data.latitude,
+                        closed: response.data.closed
                     }
                 } catch(err){
                     console.log(err)
@@ -55,28 +57,42 @@
 
             async updateAssociation(){
                 try{
-                    await axios.patch(`http://localhost:3000/associations/${this.$route.params.id}`, this.association);
-                    const response = await axios.get(`http://localhost:3000/associations/${this.$route.params.id}`);
+                    const boolString = document.querySelector("#closed").value
+                    const boolean = (/true/).test(boolString)
+                    this.association.closed = boolean
+
+                    const response = await axios.patch(`http://localhost:3000/associations/${this.$route.params.id}`, this.association);
+                    // const response = await axios.get(`http://localhost:3000/associations/${this.$route.params.id}`);
+
+                    // console.log(response.data)
                         
-                    this.association = {
-                        name: response.data.name,
-                        siret: response.data.siret,
-                        description: response.data.description,
-                        category: response.data.category,
-                        representative_name: response.data.representative_name,
-                        representative_surname: response.data.representative_surname,
-                        mail: response.data.mail,
-                        phone: response.data.phone,
-                        address: response.data.address,
-                        town: response.data.town,
-                        postal_code: response.data.postal_code,
-                        complement_address: response.data.complement_address,
-                        longitude: response.data.longitude,
-                        latitude: response.data.latitude,
-                    }
+                    // this.association = {
+                    //     name: response.data.name,
+                    //     siret: response.data.siret,
+                    //     description: response.data.description,
+                    //     category: response.data.category,
+                    //     representative_name: response.data.representative_name,
+                    //     representative_surname: response.data.representative_surname,
+                    //     mail: response.data.mail,
+                    //     phone: response.data.phone,
+                    //     address: response.data.address,
+                    //     town: response.data.town,
+                    //     postal_code: response.data.postal_code,
+                    //     complement_address: response.data.complement_address,
+                    //     longitude: response.data.longitude,
+                    //     latitude: response.data.latitude,
+                    //     closed: response.data.closed
+                    // }
+
+                    this.association = response.data;
+                    
                     window.alert("Association mise à jour !")
                 } catch(err){
-                    console.log(err.response.data)
+                    if (err.response) {
+                        console.log(err.response.data);
+                    } else {
+                        console.log(err);
+                    }
                 }
             }
         }
@@ -137,6 +153,17 @@
                 <p class="error" v-if="association.longitude.length <= 0">Champ obligatoire</p>
                 <input type="text" placeholder="Latitude" v-model="association.latitude">
                 <p class="error" v-if="association.latitude.length <= 0">Champ obligatoire</p>
+            </div>
+        </div>
+
+        <div>
+            <label>Etat</label>
+            <div>
+                <select name="closed" id="closed" v-model="association.closed">
+                    <option value="false">ouverte</option>
+                    <option value="true">fermée</option>
+                </select>
+                <p class="error" v-if="association.closed.length <= 0">Champ obligatoire</p>
             </div>
         </div>
 

@@ -10,6 +10,7 @@
                     role: "",
                     verified: false,
                 }, 
+                token: localStorage.getItem('token'),
             }
         },
 
@@ -20,7 +21,11 @@
         methods:{
             async getUserById(){
                 try{
-                    const response = await axios.get(`http://localhost:3000/auth/${this.$route.params.id}`);
+                     const response = await axios({
+                        method: 'get',
+                        url: `http://localhost:3000/auth/${this.$route.params.id}`,
+                        headers: {'x-access-token' : this.token}
+                    })
                         
                     this.user = {
                         email: response.data.email,
@@ -28,6 +33,7 @@
                         role: response.data.role,
                         verified: response.data.verified,
                     }
+
                 } catch(err){
                     console.log(err)
                 }
@@ -39,8 +45,17 @@
                     const boolean = (/true/).test(boolString)
                     this.user.verified = boolean
 
-                    await axios.patch(`http://localhost:3000/auth/update/${this.$route.params.id}`, this.user);
-                    const response = await axios.get(`http://localhost:3000/auth/${this.$route.params.id}`);
+                    await axios.patch(`http://localhost:3000/auth/update/${this.$route.params.id}`, this.user, {
+                        headers: {
+                            'x-access-token' : this.token
+                        }
+                    });
+
+                    const response = await axios.get(`http://localhost:3000/auth/${this.$route.params.id}`, {
+                        headers: {
+                            'x-access-token' : this.token
+                        }
+                    });
                     
                     this.user = {
                         email: response.data.email,
@@ -70,9 +85,9 @@
                     <p class="error" v-if="user.email.length <= 0">Champ obligatoire</p>
                     <input type="password" name="password" placeholder="Mot de passe" v-model="user.password">
                     <select name="role" id="role" v-model="user.role">
-                        <option value="" disabled selected>Role</option>
-                        <option value="admin">admin</option>
-                        <option value="superadmin">superadmin</option>
+                        <option value="En attente">En attente</option>
+                        <option value="admin">Admin</option>
+                        <option value="superadmin">Superadmin</option>
                     </select>
                     <select name="verified" id="verified" v-model="user.verified">
                         <option value="" disabled selected>Etats</option>

@@ -4,8 +4,48 @@ const prisma = new PrismaClient()
 
 const getAssos = (req, res) => {
     prisma.association.findMany({
+        where: {
+            closed: false
+        },
         orderBy: {
             name: 'asc',
+        }
+    })
+    .then((assos) => {
+        res.json(assos)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
+const getClosedAssos = (req, res) => {
+    prisma.association.findMany({
+        where: {
+            closed: true
+        },
+        orderBy: {
+            name: 'asc',
+        }
+    })
+    .then((assos) => {
+        res.json(assos)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
+const getAssosByCategories = async (req, res) => {
+    let category = req.params.category
+
+    await prisma.association.findMany({
+        where: {
+            category: category,
+            closed: false
+        },
+        orderBy: {
+            name:'asc'
         }
     })
     .then((assos) => {
@@ -66,7 +106,8 @@ const createAsso = async (req, res) => {
                 town: asso.town,
                 postal_code: asso.postal_code,
                 longitude: asso.longitude,
-                latitude: asso.latitude
+                latitude: asso.latitude,
+                closed: asso.closed
             }
         })
         .then((asso) => {
@@ -120,7 +161,8 @@ const updateAsso = async (req, res) => {
                 town: asso.town,
                 postal_code: asso.postal_code,
                 longitude: asso.longitude,
-                latitude: asso.latitude
+                latitude: asso.latitude,
+                closed: asso.closed
             }
         })
         .then((asso) => {
@@ -222,4 +264,4 @@ const getEventsByAsso = async (req, res) => {
     })    
 }
 
-export { getAssos, getAsso, createAsso, updateAsso, deleteAsso, searchAsso, getEventsByAsso }
+export { getAssos, getAsso, createAsso, updateAsso, deleteAsso, searchAsso, getEventsByAsso, getClosedAssos, getAssosByCategories }

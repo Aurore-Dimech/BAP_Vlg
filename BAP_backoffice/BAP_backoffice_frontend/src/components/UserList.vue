@@ -5,7 +5,8 @@
     export default {
         data(){
             return{
-                users: []
+                users: [],
+                token: localStorage.getItem('token')
             }
         },
 
@@ -16,8 +17,16 @@
         methods:{
             async getUsers(){
                 try {
-                    const response = await axios.get("http://localhost:3000/auth");
-                    this.users = response.data
+                    const response = await axios({
+                        method: 'get',
+                        url: "http://localhost:3000/auth",
+                        headers: {'x-access-token' : this.token}
+                    })
+                    if (response.data.error){
+                        this.$router.push({name: 'Login'})
+                    } else {
+                        this.users = response.data
+                    }
                 } catch(err) {
                     console.log(err)
                 }
@@ -25,9 +34,11 @@
 
             async deleteUser(id){
                 try{
-                    await axios.delete(
-                        `http://localhost:3000/users/${id}`
-                    )
+                    await axios.delete(`http://localhost:3000/users/${id}`, {
+                        headers: {
+                            'x-access-token' : this.token
+                        }
+                    })
                     this.getUsers()
                 }catch(err){
                     console.log(err)

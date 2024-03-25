@@ -1,11 +1,13 @@
 <script>
-    import UpdateUser from '@/components/UpdateUser.vue';
+    import ClosedAssociationList from '@/components/ClosedAssociationList.vue';
+    import ArchivedEventList from '@/components/ArchivedEventList.vue';
 
     export default {
-        name: 'EditUser',
+        name: 'Closed&Archived',
 
         components: {
-            UpdateUser
+            ClosedAssociationList,
+            ArchivedEventList
         },
 
         data(){
@@ -25,16 +27,20 @@
                 }
             }
         }
-    }
+}
 </script>
 
 <template>
+    
     <div>
-        <UpdateUser />
+        <ClosedAssociationList />
     </div>
+    <div>
+        <ArchivedEventList />
+    </div>
+
 </template>
   
-<style>
+<style scoped lang="scss">
   
 </style>
-  

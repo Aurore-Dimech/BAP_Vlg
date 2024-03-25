@@ -40,6 +40,7 @@
                 try {
                     const response = await axios.get("http://localhost:4000/associations");
                     this.items = response.data
+                    console.log(this.items)
 
                     this.items.forEach((item) =>{
                         this.marker = L.marker([item.longitude, item.latitude]).addTo(this.map)

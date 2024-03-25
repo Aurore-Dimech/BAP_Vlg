@@ -3,7 +3,31 @@ import { PrismaClient } from "@prisma/client"
 const prisma = new PrismaClient()
 
 const getEvents = (req, res) => {
-    prisma.event.findMany()
+    prisma.event.findMany({
+        where: {
+            archived: false
+        },
+        orderBy: {
+            start_date: 'asc'
+        }
+    })
+    .then((events) => {
+        res.json(events)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
+const getArchivedEvents = (req, res) => {
+    prisma.event.findMany({
+        where: {
+            archived: true
+        },
+        orderBy: {
+            start_date: 'asc'
+        }
+    })
     .then((events) => {
         res.json(events)
     })
@@ -97,12 +121,31 @@ const updateEvent = (req, res) => {
     }
 }
 
+// const deleteEvent = (req, res) => {
+//     let id = Number(req.params.id)
+
+//     prisma.event.delete({
+//         where : {
+//             id: id
+//         }
+//     })
+//     .then((event) => {
+//         res.json(event)
+//     })
+//     .catch((error) => {
+//         res.json(error)
+//     })
+// }
+
 const deleteEvent = (req, res) => {
     let id = Number(req.params.id)
 
-    prisma.event.delete({
+    prisma.event.update({
         where : {
             id: id
+        },
+        data: {
+            archived: true
         }
     })
     .then((event) => {
@@ -114,8 +157,8 @@ const deleteEvent = (req, res) => {
 }
 
 const searchEvent = async (req, res) => {
-    console.log(req.params.searchInput)
     let input = req.params.searchInput
+    
 
     await prisma.event.findMany({
         where : {
@@ -125,6 +168,9 @@ const searchEvent = async (req, res) => {
                 },
                 {
                     start_date: {contains: input}, 
+                },
+                {
+                    //association ?
                 },
                 {
                     address: {contains: input}, 
@@ -166,4 +212,4 @@ const verifyEventDate = async () => {
 }
 
 
-export { getEvents, getEvent, createEvent, updateEvent, deleteEvent, searchEvent, verifyEventDate }
+export { getEvents, getEvent, createEvent, updateEvent, deleteEvent, searchEvent, verifyEventDate, getArchivedEvents }

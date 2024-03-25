@@ -13,6 +13,7 @@ import EditUser from '../views/EditUser.vue'
 import Login from '../views/Login.vue'
 import SignUp from '../views/Signup.vue'
 import SingleUser from '../views/SingleUser.vue'
+import ClosedArchived from '../views/Closed&Archived.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -24,42 +25,42 @@ const router = createRouter({
     },
     {
       name: 'CreateAsso',
-      path: '/createAsso',
+      path: '/associations/create',
       component: CreateAsso,
     },
     {
       name: 'EditAsso',
-      path: '/editAsso/:id',
+      path: '/associations/edit/:id',
       component: EditAsso,
     },
     {
       name: 'SingleAsso',
-      path: '/association/:id',
+      path: '/associations/:id',
       component: SingleAsso,
     },
     {
       name: 'SearchAsso',
-      path: '/searchAsso',
+      path: '/associations/search',
       component: SearchAsso,
     },
     {
       name: 'CreateEvent',
-      path: '/createEvent',
+      path: '/events/create',
       component: CreateEvent,
     },
     {
       name: 'EditEvent',
-      path: '/editEvent/:id',
+      path: '/events/edit/:id',
       component: EditEvent,
     },
     {
       name: 'SingleEvent',
-      path: '/event/:id',
+      path: '/events/:id',
       component: SingleEvent,
     },
     {
       name: 'SearchEvent',
-      path: '/searchEvent',
+      path: '/events/search',
       component: SearchEvent,
     },
     {
@@ -86,6 +87,11 @@ const router = createRouter({
       name: 'SingleUser',
       path: '/users/:id',
       component: SingleUser,
+    },
+    {
+      name: 'Closed&Archived',
+      path: '/closed',
+      component: ClosedArchived,
     },
   ]
 })
