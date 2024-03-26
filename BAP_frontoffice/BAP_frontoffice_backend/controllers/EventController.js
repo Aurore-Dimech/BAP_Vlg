@@ -19,7 +19,7 @@ const getEvents = (req, res) => {
     })
 }
 
-const getEvent = (req, res) => {
+const getEvent = async (req, res) => {
     let id = Number(req.params.id)
 
     const archivedEvent = await prisma.event.findFirst({
@@ -47,8 +47,7 @@ const getEvent = (req, res) => {
 
 }
 
-const searchEvent = async (req, res) => {
-    console.log(req.params.searchInput)
+const searchEvent = async (req, res) => {// à fix
     let input = req.params.searchInput
 
     await prisma.event.findMany({

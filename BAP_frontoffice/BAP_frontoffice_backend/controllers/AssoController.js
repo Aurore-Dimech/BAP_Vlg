@@ -19,7 +19,7 @@ const getAssos = (req, res) => {
     })
 }
 
-const getAsso = (req, res) => {
+const getAsso = async (req, res) => {
     let id = Number(req.params.id)
 
     const closedAsso = await prisma.association.findFirst({

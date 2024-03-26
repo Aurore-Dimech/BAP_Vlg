@@ -34,7 +34,7 @@
 
             async deleteUser(id){
                 try{
-                    await axios.delete(`http://localhost:3000/users/${id}`, {
+                    await axios.delete(`http://localhost:3000/auth/${id}`, {
                         headers: {
                             'x-access-token' : this.token
                         }
@@ -58,7 +58,6 @@
                 <tr>
                     <th>Utilisateurs</th>
                     <th>Role</th>
-                    <th>Vérification</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -69,7 +68,6 @@
                         <router-link :to="{name:'SingleUser', params:{id: user.id}}"> {{ user.email }}</router-link>
                     </td>
                     <td>{{ user.role }}</td>
-                    <td>{{ user.verified }}</td>
                     <td>
                         <router-link :to="{name:'EditUser', params:{id: user.id}}">Modifier</router-link>
                         <button @click="deleteUser(user.id)">Supprimer</button>

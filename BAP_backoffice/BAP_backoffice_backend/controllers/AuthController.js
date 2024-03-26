@@ -4,51 +4,8 @@ import jwt from "jsonwebtoken"
 
 const prisma = new PrismaClient()
 
-const getUsers = (req, res) => {
+const verifyAuthorisation = (req, res, next) => {
     const token = req.headers['x-access-token']
-
-    if(!token){
-        return res.json({error: 'no token provided'})
-    }
-
-    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
-
-        if(error){
-            return res.json({error: 'Unauthorized'})
-        }
-
-        prisma.user.findUnique({
-            where: {
-                email: decoded.email
-            }
-        })
-        .then((user) => {
-            if(user.role != "superadmin"){
-                return res.json({error: 'Unauthorized'})
-            }
-
-            prisma.user.findMany({
-                orderBy: {
-                    email: 'asc',
-                }
-            })
-            .then((users) => {
-                res.json(users)
-            })
-            .catch((error) => {
-                res.json(error)
-            })
-        })
-        .catch((error) => {
-            res.json(error)
-        })
-    })
-}
-
-const getUserById = (req, res) => {
-    const token = req.headers['x-access-token']
-
-    let id = Number(req.params.id)
 
     if(!token){
         return res.json({error: 'no token provided'})
@@ -70,18 +27,44 @@ const getUserById = (req, res) => {
             if(newUserData.role != "superadmin"){
                 return res.json({error: 'Unauthorized'})
             }
+            next();
+        })
+        .catch((error) => {
+            res.json(error)
+        })
+    })
+}
 
-            prisma.user.findUnique({
-                where : {
-                    id: id
-                }
-            })
-            .then((user) => {
-                res.json(user)
-            })
-            .catch((error) => {
-                res.json(error)
-            })
+const getUsers = (req, res) => {
+    verifyAuthorisation(req, res, ()=> {
+        prisma.user.findMany({
+            orderBy: {
+                email: 'asc',
+            }
+        })
+        .then((users) => {
+            res.json(users)
+        })
+        .catch((error) => {
+            res.json(error)
+        })
+    })
+}
+
+const getUserById = (req, res) => {
+    let id = Number(req.params.id)
+
+    verifyAuthorisation(req, res, ()=> {
+        prisma.user.findUnique({
+            where : {
+                id: id
+            }
+        })
+        .then((user) => {
+            res.json(user)
+        })
+        .catch((error) => {
+            res.json(error)
         })
     })
 }
@@ -97,7 +80,7 @@ const signUp = async (req, res) => {
     })
 
     if(email === '' || password ===''){
-        res.json({error: 'All fields must be completed'})
+        return res.json({error: 'All fields must be completed'})
     } else if (existingUser) {
         return res.status(400).json({ error: 'This email is already registered' })
     } else {
@@ -106,12 +89,11 @@ const signUp = async (req, res) => {
             data: {
                 email,
                 password: hashedPassword,
-                role: 'En attente',
-                verified: false
+                role: 'en attente',
             }
         })
     
-        .then((user) => {       
+        .then((user) => {     
             res.json(user)
         })
         .catch((error) => {
@@ -132,7 +114,7 @@ const logIn = async (req, res) => {
         return res.json({error: 'User not found'})
     }
 
-    if (!user.verified){
+    if (user.role === "en attente"){
         return res.json({error: 'User not verified'})
     }
 
@@ -150,13 +132,9 @@ const logIn = async (req, res) => {
 }
 
 const updateUser = async (req, res) => { //à vérifier
-    const token = req.headers['x-access-token']
-
     let id = Number(req.params.id)
     let userData = req.body
-            
-    const hashedPassword = await bcrypt.hash(userData.password, 10)
-
+    
     const existingUser = await prisma.user.findFirst({
         where: {
             email: userData.email,
@@ -166,96 +144,76 @@ const updateUser = async (req, res) => { //à vérifier
         }
     })
 
-    if(!token){
-        return res.json({error: 'no token provided'})
-    }
+    verifyAuthorisation(req, res, async ()=> {
 
-    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
+        if(userData.email === '' || userData.password ==='' || userData.role ===''){
+            return res.status(400).json({ error: 'All fields must be completed' })
+        } else if (existingUser) {
+            return res.status(400).json({ error: 'This email already is already registered' })
 
-        if(error){
-            return res.json({error: 'Unauthorized'})
-        }
+        } else {
 
-        prisma.user.findUnique({
-            where: {
-                email: decoded.email
-            }
-        })
-
-        .then((newUserData) => {
-            if(newUserData.role != "superadmin"){
-                return res.json({error: 'Unauthorized'})
+            let updateData = {
+                email: userData.email,
+                role: userData.role,
             }
 
-            if(userData.email === '' || userData.password ==='' || userData.role ==='' || userData.verified === ''){
-                return res.status(400).json({ error: 'All fields must be completed' })
-            } else if (existingUser) {
-                return res.status(400).json({ error: 'This email already is already registered' })
+            if(userData.password) {
+                const hashedPassword = await bcrypt.hash(userData.password, 10)
+                // prisma.user.update({
+                //     where : {
+                //         id: id
+                //     },
+                //     data: {
+                //         password: hashedPassword,
+                //     }
+                // })
+                updateData.password = hashedPassword
+            }
 
-            } else {
-
-                prisma.user.update({
-                    where : {
-                        id: id
-                    },
-                    data: {
-                        email: userData.email,
-                        password: hashedPassword,
-                        role: userData.role,
-                        verified: userData.verified
-                    }
-                })
+            prisma.user.update({
+                where : {
+                    id: id
+                },
+                data: updateData
+            })
             
-                .then((updatedUser) => {
-                    res.json(updatedUser)
-                })
+            .then((updatedUser) => {
+                res.json(updatedUser)
+            })
                 .catch((error) => {
-                    res.json({error: error.message})
-                })
-            }
-        })
+                res.json({error: error.message})
+            })
+        }
     })
 }
 
 const deleteUser = async (req, res) => {
-    const token = req.headers['x-access-token']
-
     let id = Number(req.params.id)
 
-    if(!token){
-        return res.json({error: 'no token provided'})
-    }
-
-    jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
-
-        if(error){
-            return res.json({error: 'Unauthorized'})
-        }
-
-        prisma.user.findUnique({
-            where: {
-                email: decoded.email
+    verifyAuthorisation(req, res, ()=> {
+        prisma.user.delete({
+            where : {
+                id: id
             }
         })
-
-        .then((newUserData) => {
-            if(newUserData.role != "superadmin"){
-                return res.json({error: 'Unauthorized'})
-            }
-
-            prisma.user.delete({
-                where : {
-                    id: id
-                }
-            })
-            .then((asso) => {
-                res.json(asso)
-            })
-            .catch((error) => {
-                res.json(error)
-            })
+        .then((asso) => {
+            res.json(asso)
+        })
+        .catch((error) => {
+            res.json(error)
         })
     })
 }
 
-export { getUsers, getUserById, signUp, logIn, updateUser, deleteUser }
+const verifyRole = (req, res) => {
+    verifyAuthorisation(req, res, (error)=> {
+        if (error) {
+            return res.status(500).json({ error: 'There was an error verifying the role.' });
+        }
+
+        res.json({ success: true });
+    })
+}
+
+export { getUsers, getUserById, signUp, logIn, updateUser, deleteUser, verifyRole }

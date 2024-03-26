@@ -1,5 +1,6 @@
 <script>
 import { RouterLink, RouterView } from 'vue-router'
+import axios from "axios"
 
 export default {
         name:'App',
@@ -8,10 +9,18 @@ export default {
 
         },
 
+        data(){
+          return{
+            superadmin(){
+              return false
+            } 
+          }
+        },
+
         computed:{
                 token(){
                   return localStorage.getItem('token')
-                } 
+                }
         },
 
         watch: {
@@ -22,18 +31,28 @@ export default {
 
         created: function(){
             this.verifyConnection();
+            this.verifyRole();
         },
 
         methods:{
-            verifyConnection() {
-                if (!this.token) {
-                  this.$router.push('/login');
-                }
-            },
-            disconnect(){
-              localStorage.removeItem('token')
-              location.reload()
+          verifyConnection() {
+            if (!this.token) {
+              this.$router.push('/login');
             }
+          },
+
+          disconnect(){
+            localStorage.removeItem('token')
+            location.reload()
+          },
+
+          async verifyRole(){
+            const response = await axios.get("http://localhost:3000/auth/connection", {headers: {'x-access-token' : this.token}});
+            
+            if (!response.data.error){
+              this.superadmin = true
+            }
+          }
         }
     }
 
@@ -50,7 +69,7 @@ export default {
         <RouterLink to="/associations/search">Rechercher une association</RouterLink>
         <RouterLink to="/events/create">Créer un évènement</RouterLink>
         <RouterLink to="/events/search">Rechercher un évènement</RouterLink>
-        <RouterLink to="/users/list">Liste d'utilisateurs</RouterLink>
+        <RouterLink to="/users/list" v-if="superadmin ==true">Liste d'utilisateurs</RouterLink>
         <RouterLink to="/closed">Archives</RouterLink>
         <button @click="disconnect">Se déconnecter</button>
       </nav>
