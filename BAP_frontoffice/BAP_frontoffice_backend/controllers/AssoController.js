@@ -19,6 +19,26 @@ const getAssos = (req, res) => {
     })
 }
 
+const getAssosByCategories = async (req, res) => {
+    let category = req.params.category
+
+    await prisma.association.findMany({
+        where: {
+            category: category,
+            closed: false
+        },
+        orderBy: {
+            name:'asc'
+        }
+    })
+    .then((assos) => {
+        res.json(assos)
+    })
+    .catch((error) => {
+        res.json(error)
+    })
+}
+
 const getAsso = async (req, res) => {
     let id = Number(req.params.id)
 
@@ -102,4 +122,4 @@ const getEventsByAsso = async (req, res) => {
     })    
 }
 
-export { getAssos, getAsso, searchAsso, getEventsByAsso }
+export { getAssos, getAsso, searchAsso, getEventsByAsso, getAssosByCategories }

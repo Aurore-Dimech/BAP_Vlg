@@ -1,6 +1,6 @@
 <script>
     import axios from "axios"
-    import L from "leaflet"
+    import L, { map, marker } from "leaflet"
     import markerIcon from 'leaflet/dist/images/marker-icon.png';
     import markerIconShadow from 'leaflet/dist/images/marker-shadow.png';
 
@@ -20,7 +20,21 @@
             return{
                 items:[],
                 map: null,
-                marker: null
+                markers: [],
+                categories:[ //ajouter toutes les catégories
+                    {
+                        name: "santé",
+                        value: "health"
+                    },
+                    {
+                        name: "culture",
+                        value: "culture"
+                    },
+                    {
+                        name: 'education',
+                        value: 'education'
+                    }
+                ]
             }
         },
 
@@ -40,23 +54,48 @@
                 try {
                     const response = await axios.get("http://localhost:4000/associations");
                     this.items = response.data
-                    console.log(this.items)
 
                     this.items.forEach((item) =>{
-                        this.marker = L.marker([item.longitude, item.latitude]).addTo(this.map)
-                        this.marker.bindPopup(`${item.name}`)
+                        const marker = L.marker([item.longitude, item.latitude]).addTo(this.map)
+                        marker.bindPopup(`${item.name}`)
 
-                        if(item.category == "santé"){
-                            this.marker._icon.style.filter = "hue-rotate(150deg)";
+                        if(item.category == "santé"){ //gérer les catégories et les couleurs ici ; bonne chance
+                            marker._icon.style.filter = "hue-rotate(150deg)";
                         } else if(item.category == "culture"){
-                            this.marker._icon.style.filter = "hue-rotate(280deg)";
+                            marker._icon.style.filter = "hue-rotate(280deg)";
                         } else if (item.category == "education") {
-                            this.marker._icon.style.filter = "hue-rotate(120deg)";
+                            marker._icon.style.filter = "hue-rotate(120deg)";
                         }
+
+                        this.markers.push(marker)
                     })
                 } catch(err) {
                     console.log(err)
                 }
+            },
+
+            async getAssociationsByCategories(category){
+                this.items = []
+                this.markers.forEach(marker => marker.remove());
+                this.markers = []
+
+                const response = await axios.get(`http://localhost:4000/associations/category/${category}`);
+                this.items = response.data
+
+                this.items.forEach((item) =>{
+                    const marker = L.marker([item.longitude, item.latitude]).addTo(this.map)
+                    marker.bindPopup(`${item.name}`)
+
+                    if(item.category == "santé"){
+                        marker._icon.style.filter = "hue-rotate(150deg)";
+                    } else if(item.category == "culture"){
+                        marker._icon.style.filter = "hue-rotate(280deg)";
+                    } else if (item.category == "education") {
+                        marker._icon.style.filter = "hue-rotate(120deg)";
+                    }
+
+                    this.markers.push(marker);
+                })
             }
         }
     }
@@ -85,6 +124,10 @@
                 </tr>
             </tbody>
 
+            <div>
+                <button v-for="category in categories" :key="category.value" @click="getAssociationsByCategories(category.value)">{{ category.name }}</button>
+            </div>
+
         </table>
         
     </div>
@@ -105,6 +148,9 @@
     bottom: 15%;
     right: 10%;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 40px;
     text-decoration: none;
     color: white;
@@ -113,6 +159,8 @@ table{
     width: 100vw;
 
     tr{
+        display: flex;
+        justify-content: space-evenly;
 
         th{
             padding: 1% 5%;

@@ -166,9 +166,9 @@ const searchEvent = async (req, res) => {
                 {
                     name: {contains: input}, 
                 },
-                {
-                    start_date: {contains: input}, 
-                },
+                // {
+                //     start_date: {contains: input}, 
+                // },
                 {
                     //association ?
                 },

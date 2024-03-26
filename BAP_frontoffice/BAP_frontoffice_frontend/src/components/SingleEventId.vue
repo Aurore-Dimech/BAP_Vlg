@@ -60,7 +60,7 @@
                     const response = await axios.get(
                     `http://localhost:4000/associations/${Number(this.event.id_association)}`
                     );
-                    this.association = response.data.name;
+                    this.association = response.data;
                 } catch (err) {
                     console.log(err);
                 }
@@ -86,7 +86,8 @@
                 <p>Date de début : {{ this.startDate.slice(0, 10) }}</p>
                 <p>Heure de début : {{ this.startDate.slice(11, 16) }}</p>
                 <p>Date de fin : {{ this.event.end_date }}</p>
-                <p>Association : {{ this.association }}</p>
+                <!-- <p>Association : {{ this.association }}</p> -->
+                <p>Association : <router-link :to="{name:'SingleAsso', params:{id: association.id}}"> {{ association.name }}</router-link></p>
             </div>
         </div>
 

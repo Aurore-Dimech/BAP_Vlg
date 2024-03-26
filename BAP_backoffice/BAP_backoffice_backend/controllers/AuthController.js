@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken"
+import { exec } from 'child_process'
 
 const prisma = new PrismaClient()
 
@@ -216,4 +217,22 @@ const verifyRole = (req, res) => {
     })
 }
 
-export { getUsers, getUserById, signUp, logIn, updateUser, deleteUser, verifyRole }
+const importUsers = (req, res) => {
+    console.log("import begin")
+    exec('npm run seed', (error, stderr) => {
+        if (error) {
+            res.json({ error });
+            console.log(error)
+            return;
+        }
+        if (stderr) {
+            res.json({ error: stderr });
+            console.log("stderr")
+            return;
+        }
+        console.log("seed script completed")
+        res.send('Seed script completed');
+    });
+}
+
+export { getUsers, getUserById, signUp, logIn, updateUser, deleteUser, verifyRole, importUsers }

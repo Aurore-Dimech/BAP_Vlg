@@ -1,0 +1,7 @@
+[
+    {
+        "email": "firstSuperadmin@admin.fr",
+        "password": "$2b$10$xP7Lx.MYaXGmo9LlLzIHN.u.5hqkhgmwhdW0x2Kcg2wa94dyrAzwG",
+        "role": "superadmin"
+    }
+]

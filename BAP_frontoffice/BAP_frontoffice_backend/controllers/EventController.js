@@ -57,9 +57,9 @@ const searchEvent = async (req, res) => {// à fix
                 {
                     name: {contains: input}, 
                 },
-                {
-                    start_date: {contains: input}, 
-                },
+                // {
+                //     start_date: {contains: input}, 
+                // },
                 {
                     address: {contains: input}, 
                 },

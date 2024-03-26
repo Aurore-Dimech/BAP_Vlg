@@ -43,7 +43,6 @@
             <thead>
                 <tr>
                     <th>Evènement</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
 

@@ -31,6 +31,18 @@
                 }
             },
 
+            async importUsers() {
+                await axios.post('http://localhost:3000/auth/import', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(() => {
+                    console.log("done")
+                    // location.reload()
+                })
+            }
             
         }
     }
@@ -55,6 +67,8 @@
         <p class="error" v-if="data && data.error">{{ data.error }}</p>
 
     </div>
+
+    <button @click="importUsers()">Importer</button>
 
 </template>
   
