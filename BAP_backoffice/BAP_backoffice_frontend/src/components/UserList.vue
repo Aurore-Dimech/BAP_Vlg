@@ -49,6 +49,7 @@
 </script>
 
 <template>
+<div class="fond">
     <div class="title">
         <h1 id="Titre">Liste des utilisateurs</h1>
     </div>
@@ -80,6 +81,7 @@
         </table>
         
     </div>
+</div>
 
 
 </template>

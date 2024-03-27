@@ -28,7 +28,7 @@
 
 <template>
 
-    <div>
+    <div class="fond">
 
         <table>
 
@@ -45,7 +45,7 @@
                         <router-link :to="{name:'SingleAsso', params:{id: association.id}}"> {{ association.name }}</router-link>
                     </td>
                     <td>
-                        <router-link :to="{name:'EditAsso', params:{id: association.id}}">Modifier</router-link>
+                        <router-link :to="{name:'EditAsso', params:{id: association.id}}" class="modifier">Modifier</router-link>
                     </td>
                 </tr>
             </tbody>
@@ -83,7 +83,7 @@ table{
 
         th{
             padding: 1% 5%;
-            border: 1px solid grey;
+            
         }
     }
 }

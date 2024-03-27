@@ -95,45 +95,60 @@ export default {
 <style scoped>
 
 header {
-  padding: 25px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  padding: 10px;
   background-color: #CECECE;
-  border-radius: 10px;
+  border-radius: 23px;
   text-decoration: none;
+  width: 165vh;
+  height: 40px;
+  color: inherit;
+  
+}
+
+header a {
+  color: inherit;
+  text-decoration: none;
+  font-family: Poppins;
 }
 
 img {
   margin-left: 1px;
-  
 }
 
 nav{
   display: flex;
   justify-content: space-between;
-  width: 1379px;
-height: 20px;
+  gap: 40px;
   color: #000;
-text-align: center;
-font-family: Inter;
-font-size: 15px;
-font-style: normal;
-font-weight: 500;
-line-height: 120.833%;
-text-decoration: none;
+  color: inherit;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 15px;
+  font-style: normal;
+  font-weight: 500;
+  text-decoration: none;
+  line-height: normal;
   
 }
 
-.deconnection{
-    width: 120px;
-    height: 30px;
-    border-radius: 10px;
-    border: none;
-    text-align: center;
-    font-family: Poppins;
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    background-color: #9F81A1;
-    cursor: pointer;
+.deconnection {
+  align-items: center;
+  width: 130px;
+  height: 25px;
+  border-radius: 10px;
+  border: none;
+  background-color: #9F81A1;
+  cursor: pointer;
+  color: #000;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
 }
 </style>

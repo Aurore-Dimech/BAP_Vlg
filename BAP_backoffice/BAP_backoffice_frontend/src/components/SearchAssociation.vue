@@ -37,6 +37,7 @@
 </script>
 
 <template>
+ <div class="fond">
     <h1 id="Titre">Rechercher une association</h1>
     <div class="container">
         <div class="search-bar">
@@ -72,11 +73,12 @@
             </tbody>
         </table>
     </div>
-
+</div>
 
 </template>
   
 <style>
+
 
 .container {
   display: flex;

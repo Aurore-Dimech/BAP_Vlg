@@ -31,14 +31,16 @@
 </script>
 
 <template>
-    
+<div class="fond">
+  <div class="title">
+    <h1 id="Titre"> Associations et évènements fermées</h1>
+  </div>
     <div>
         <ClosedAssociationList />
-    </div>
-    <div>
         <ArchivedEventList />
     </div>
-
+  
+</div> 
 </template>
   
 <style scoped lang="scss">

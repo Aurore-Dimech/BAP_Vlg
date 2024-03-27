@@ -37,6 +37,7 @@
 </script>
 
 <template>
+ <div class="fond">
     <h1 id="Titre">Rechercher un évenement</h1>
     <div class="container">
         <div>
@@ -74,7 +75,7 @@
 
         </table>
     </div>
-
+</div>
 
 </template>
   

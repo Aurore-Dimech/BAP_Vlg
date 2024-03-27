@@ -45,7 +45,7 @@
                         <router-link :to="{name:'SingleEvent', params:{id: event.id}}"> {{ event.name }}</router-link>
                     </td>
                     <td>
-                        <router-link :to="{name:'EditEvent', params:{id: event.id}}">Modifier</router-link>
+                        <router-link :to="{name:'EditEvent', params:{id: event.id}}" class="modifier">Modifier</router-link>
                     </td>
                 </tr>
             </tbody>
@@ -83,7 +83,7 @@ table{
 
         th{
             padding: 1% 5%;
-            border: 1px solid grey;
+            
         }
     }
 }
