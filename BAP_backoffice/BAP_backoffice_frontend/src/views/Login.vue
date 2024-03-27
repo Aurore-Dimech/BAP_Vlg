@@ -8,23 +8,23 @@
             LogInComponent
         },
 
-        data(){
-            return {
-                token: localStorage.getItem('token')
-            }
-        },
+        // data(){
+        //     return {
+        //         token: localStorage.getItem('token')
+        //     }
+        // },
 
-        created: function(){
-            this.verifyConnection();
-        },
+        // created: function(){
+        //     this.verifyConnection();
+        // },
 
-        methods:{
-            verifyConnection() {
-                if (this.token) {
-                    this.$router.push('/');
-                }
-            }
-        }
+        // methods:{
+        //     verifyConnection() {
+        //         if (this.token) {
+        //             this.$router.push('/');
+        //         }
+        //     }
+        // }
     }
 </script>
 

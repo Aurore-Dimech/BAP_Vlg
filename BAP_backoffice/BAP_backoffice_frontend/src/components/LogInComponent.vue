@@ -14,6 +14,10 @@
             }
         },
 
+        created(){
+            this.verifyConnection();
+        },
+
         methods:{
             async logIn(){
                 const response = await axios.post("http://localhost:3000/auth/login", this.user);
@@ -24,7 +28,7 @@
                     try{
                         localStorage.setItem('token', this.data)
     
-                        location.reload()
+                        window.location.href = '/'
                     } catch(err){
                         console.log(err.response.data)
                     }
@@ -42,6 +46,12 @@
                     console.log("done")
                     // location.reload()
                 })
+            },
+
+            verifyConnection() {
+                if(this.token) {
+                    this.$router.push('/')
+                }
             }
             
         }
